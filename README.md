@@ -20,9 +20,11 @@
 - [Key Features](#key-features)
 - [User Roles & Permissions](#user-roles--permissions)
 - [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
+- [Monorepo Structure](#monorepo-structure)
 - [Getting Started](#getting-started)
+- [Integration](#integration-frontend--backend)
 - [Design System](#design-system)
+- [Deployment](#deployment)
 - [Security](#security)
 - [Contributing](#contributing)
 - [License](#license)
@@ -191,28 +193,16 @@ php artisan serve
   php artisan test
   ```
 
+## 🔗 Integration (Frontend ↔ Backend)
+
+- **API base URL**: Frontend uses `NEXT_PUBLIC_API_URL` to call the backend.
+  - Local: set `NEXT_PUBLIC_API_URL=http://localhost:8000`
+  - Production: set `NEXT_PUBLIC_API_URL=https://<your-backend-domain>`
+- **Base path**: Backend should expose REST endpoints under `/api/v1/*`.
+- **CORS**: Allow the frontend origins in Laravel `config/cors.php` (e.g., `http://localhost:3000`, your Vercel domain).
+- **Auth**: Prefer token/cookie-based auth; include `credentials: 'include'` on frontend if using cookies.
+
 ## 🎨 Design System
-
-### Color Palette
-
-```css
-:root {
-  /* Brand Colors */
-  --primary: 0, 150, 136; /* Medical Teal */
-  --primary-light: 178, 223, 219; /* Light Teal */
-  --primary-dark: 0, 105, 92; /* Dark Teal */
-
-  /* Semantic Colors */
-  --success: 34, 197, 94; /* Green */
-  --danger: 239, 68, 68; /* Red */
-  --warning: 249, 115, 22; /* Orange */
-  --info: 59, 130, 246; /* Blue */
-
-  /* Neutral Palette */
-  --neutral-50: 249, 250, 251; /* Lightest */
-  --neutral-900: 17, 24, 39; /* Darkest */
-}
-```
 
 ### Typography
 
@@ -228,20 +218,18 @@ php artisan serve
 - **Tables**: Responsive with horizontal scroll on mobile
 - **Modals/Dialogs**: Accessible overlays with focus management
 
-### Responsive Breakpoints
+## 🚀 Deployment
 
-```css
-/* Mobile First Approach */
-@media (min-width: 640px) {
-  /* Tablet */
-}
-@media (min-width: 1024px) {
-  /* Desktop */
-}
-@media (min-width: 1280px) {
-  /* Wide */
-}
-```
+- **Frontend (Vercel)**
+  - Connect the GitHub repo in Vercel
+  - Set `NEXT_PUBLIC_API_URL` to your backend URL
+  - Vercel auto-detects Next.js and builds with `next build`
+- **Backend (Railway — free tier)**
+  - Create a new Railway project and connect the repo `backend-laravel/`
+  - Add a PostgreSQL plugin and copy its `DATABASE_URL` (or map to `DB_*` vars)
+  - Set env: `APP_KEY` (generate locally), `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://<railway-domain>`
+  - Start command (simplest): `php -S 0.0.0.0:$PORT -t public` (for production-grade use PHP-FPM + Nginx)
+  - Run `php artisan migrate --force` after first deploy
 
 ## 🔒 Security
 
