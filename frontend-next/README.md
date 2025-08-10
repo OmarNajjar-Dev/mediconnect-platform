@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MediConnect Frontend — Next.js + TypeScript + shadcn/ui
+
+This folder contains the MediConnect frontend built with Next.js (App Router), TypeScript, Tailwind CSS, and shadcn/ui. Unit tests are planned with Jest and Testing Library.
+
+## Stack
+
+- Next.js 15 (React 19)
+- TypeScript 5
+- Tailwind CSS 4
+- shadcn/ui (Radix UI primitives)
+- Jest + Testing Library (planned)
+
+## Scripts
+
+```bash
+npm run dev      # Start dev server (http://localhost:3000)
+npm run build    # Production build
+npm run start    # Start production server
+npm run lint     # Lint with ESLint
+```
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+cd frontend-next
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser. Edit `src/app/page.tsx` to start.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+frontend-next/
+├─ src/
+│  └─ app/
+│     ├─ layout.tsx
+│     ├─ page.tsx
+│     └─ globals.css
+├─ next.config.ts
+├─ tsconfig.json
+└─ eslint.config.mjs
+```
 
-## Learn More
+## UI: shadcn/ui
 
-To learn more about Next.js, take a look at the following resources:
+Initialize and generate components after Tailwind is configured:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx shadcn@latest init
+npx shadcn@latest add button card dialog input
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Components will be generated under `src/components` (or the configured path). Ensure Tailwind is enabled and `globals.css` includes the required base layers.
 
-## Deploy on Vercel
+## Testing (Jest) — optional setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Install dev dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm i -D jest ts-jest @types/jest jest-environment-jsdom \
+  @testing-library/react @testing-library/jest-dom @testing-library/user-event
+```
+
+Add a basic config (e.g., `jest.config.ts`):
+
+```ts
+import type { Config } from "jest";
+
+const config: Config = {
+  testEnvironment: "jest-environment-jsdom",
+  transform: { "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "tsconfig.json" }] },
+  moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+};
+export default config;
+```
+
+And `jest.setup.ts`:
+
+```ts
+import "@testing-library/jest-dom";
+```
+
+Then run:
+
+```bash
+npx jest
+```
+
+## Linting & Formatting
+
+```bash
+npm run lint
+```
+
+## Environment
+
+Environment variables are managed via Next.js runtime config. Create `.env.local` for local overrides as needed.
